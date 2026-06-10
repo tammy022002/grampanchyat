@@ -1,0 +1,119 @@
+.app-layout {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #1a252f;
+  text-align: center;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+/* Custom Scrollbar for sidebar */
+.sidebar-content::-webkit-scrollbar { width: 6px; }
+.sidebar-content::-webkit-scrollbar-track { background: #2c3e50; }
+.sidebar-content::-webkit-scrollbar-thumb { background: #1a252f; border-radius: 3px; }
+
+.menu-category {
+  margin-top: 15px;
+}
+
+.category-title {
+  padding: 5px 20px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #95a5a6;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links li {
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #bdc3c7;
+  text-decoration: none;
+  display: block;
+  padding: 10px 20px 10px 30px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.nav-links li a:hover {
+  background-color: #34495e;
+  color: white;
+}
+
+.nav-links li a.active-link {
+  background-color: #3498db;
+  color: white;
+  border-left: 4px solid #2980b9;
+  padding-left: 26px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f7f6;
+}
+
+.topbar {
+  height: 60px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+}
+
+.content-area {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}
