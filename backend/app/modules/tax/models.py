@@ -15,7 +15,7 @@ class TaxDemand(Base):
     __tablename__ = 'tax_demand'
     
     demand_id = Column(Integer, primary_key=True, autoincrement=True)
-    assessment_id = Column(Integer)
+    assessment_id = Column(Integer, ForeignKey('tax_assessment.assessment_id', ondelete='CASCADE'))
     demand_year = Column(String(50))
     amount_due = Column(Numeric(15, 2))
     due_date = Column(Date)
@@ -25,7 +25,7 @@ class TaxReceipt(Base):
     
     tax_receipt_id = Column(Integer, primary_key=True, autoincrement=True)
     receipt_no = Column(String(100))
-    taxpayer_id = Column(Integer)
+    taxpayer_id = Column(Integer, ForeignKey('tax_assessment.assessment_id', ondelete='CASCADE'))
     tax_type = Column(String(100))
     amount = Column(Numeric(15, 2))
     receipt_date = Column(Date)

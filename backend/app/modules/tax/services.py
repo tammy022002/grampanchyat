@@ -38,6 +38,22 @@ class TaxService:
             raise BusinessRuleException("Receipt amount must be greater than zero")
             
         obj = tax_receipt_repo.create(db, receipt_in.model_dump())
+        
+        # Post automatic accounting transaction
+        from app.modules.finance.services import FinanceService
+        assessment = tax_assessment_repo.get_by_id(db, receipt_in.taxpayer_id)
+        owner_name = assessment.owner_name if assessment else "Unknown Taxpayer"
+        
+        FinanceService.post_accounting_transaction(
+            db=db,
+            tx_date=receipt_in.receipt_date,
+            voucher_no=receipt_in.receipt_no,
+            receipt_amount=receipt_in.amount,
+            payment_amount=0.0,
+            account_head=receipt_in.tax_type,
+            narration=f"Income: Tax Collection - {owner_name} ({receipt_in.tax_type})"
+        )
+        
         db.commit()
         db.refresh(obj)
         return obj

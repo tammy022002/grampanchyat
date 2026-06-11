@@ -42,6 +42,60 @@ class FinanceService:
     @staticmethod
     def create_receipt(db: Session, receipt_in: ReceiptCreate) -> ReceiptResponse:
         obj = receipt_repo.create(db, receipt_in.model_dump())
+        
+        # Post automatic accounting transaction
+        FinanceService.post_accounting_transaction(
+            db=db,
+            tx_date=receipt_in.receipt_date,
+            voucher_no=receipt_in.receipt_no,
+            receipt_amount=receipt_in.amount,
+            payment_amount=0.0,
+            account_head=receipt_in.purpose,
+            narration=f"Income: {receipt_in.purpose} from {receipt_in.payer_name}"
+        )
+        
         db.commit()
         db.refresh(obj)
         return obj
+
+    @staticmethod
+    def post_accounting_transaction(
+        db: Session,
+        tx_date,
+        voucher_no: str,
+        receipt_amount: float,
+        payment_amount: float,
+        account_head: str,
+        narration: str
+    ):
+        from app.modules.finance.models import Cashbook, Ledger
+        
+        # Fetch last cashbook entry to compute closing balance
+        last_cashbook = db.query(Cashbook).order_by(Cashbook.entry_id.desc()).first()
+        prev_balance = float(last_cashbook.balance) if last_cashbook else 0.0
+        new_balance = prev_balance + float(receipt_amount) - float(payment_amount)
+        
+        cashbook_entry = Cashbook(
+            transaction_date=tx_date,
+            voucher_no=voucher_no,
+            receipt_amount=receipt_amount,
+            payment_amount=payment_amount,
+            balance=new_balance,
+            narration=narration
+        )
+        db.add(cashbook_entry)
+        
+        # Fetch last ledger entry for this account head to compute closing balance
+        last_ledger = db.query(Ledger).filter(Ledger.account_head == account_head).order_by(Ledger.ledger_id.desc()).first()
+        prev_ledger_balance = float(last_ledger.balance) if last_ledger else 0.0
+        new_ledger_balance = prev_ledger_balance + float(receipt_amount) - float(payment_amount)
+        
+        ledger_entry = Ledger(
+            account_head=account_head,
+            transaction_date=tx_date,
+            debit=payment_amount,
+            credit=receipt_amount,
+            balance=new_ledger_balance
+        )
+        db.add(ledger_entry)
+        db.flush()

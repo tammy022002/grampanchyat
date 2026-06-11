@@ -4,7 +4,7 @@ from typing import Optional
 
 class AttendanceBase(BaseModel):
     employee_id: int
-    work_name: str
+    work_id: int
     date: date
     status: str
 
@@ -17,10 +17,11 @@ class AttendanceResponse(AttendanceBase):
 
 class SalaryPaymentBase(BaseModel):
     employee_id: int
+    work_id: Optional[int] = None
     salary_month: str
-    gross_salary: float
-    deductions: float
-    net_salary: float
+    gross_salary: Optional[float] = 0.0
+    deductions: Optional[float] = 0.0
+    net_salary: Optional[float] = 0.0
 
 class SalaryPaymentCreate(SalaryPaymentBase):
     pass

@@ -51,12 +51,12 @@ INSERT INTO Work_Bill (work_id, contractor_name, amount, bill_date) VALUES
 (1, 'Patil Constructions', 200000.00, '2026-10-15');
 
 -- 12. Attendance
-INSERT INTO Attendance (employee_id, work_name, date, status) VALUES
-(1, 'Office Duty', '2026-10-01', 'Present');
+INSERT INTO Attendance (employee_id, work_id, date, status) VALUES
+(1, 1, '2026-10-01', 'Present');
 
 -- 13. Salary Payment
-INSERT INTO Salary_Payment (employee_id, salary_month, gross_salary, deductions, net_salary) VALUES
-(1, 'October 2026', 35000.00, 2000.00, 33000.00);
+INSERT INTO Salary_Payment (employee_id, work_id, salary_month, gross_salary, deductions, net_salary) VALUES
+(1, 1, 'October 2026', 35000.00, 2000.00, 33000.00);
 
 -- 14. Assets & Liabilities
 INSERT INTO Assets_Liabilities (financial_year, asset_name, asset_value, liability_name, liability_value) VALUES

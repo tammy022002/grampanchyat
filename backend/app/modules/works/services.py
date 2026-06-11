@@ -27,6 +27,23 @@ class WorksService:
     def create_bill(db: Session, bill_in: WorkBillCreate) -> WorkBillResponse:
         # Business rule logic here e.g., Bill amount shouldn't exceed estimated cost
         obj = work_bill_repo.create(db, bill_in.model_dump())
+        
+        # Post automatic accounting transaction
+        from app.modules.finance.services import FinanceService
+        work_est = work_estimate_repo.get_by_id(db, bill_in.work_id)
+        work_name = work_est.work_name if work_est else "Development Work"
+        account_head = "Road Construction" if "road" in work_name.lower() else "Public Works"
+        
+        FinanceService.post_accounting_transaction(
+            db=db,
+            tx_date=bill_in.bill_date,
+            voucher_no=f"V-BILL-{obj.bill_id}",
+            receipt_amount=0.0,
+            payment_amount=bill_in.amount,
+            account_head=account_head,
+            narration=f"Expense: Payment for Work Bill #{obj.bill_id} ({work_name})"
+        )
+        
         db.commit()
         db.refresh(obj)
         return obj

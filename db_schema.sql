@@ -111,7 +111,7 @@ CREATE TABLE Tax_Assessment (
 
 CREATE TABLE Tax_Demand (
     demand_id SERIAL PRIMARY KEY,
-    assessment_id INT,
+    assessment_id INT REFERENCES Tax_Assessment(assessment_id) ON DELETE CASCADE,
     demand_year VARCHAR(50),
     amount_due NUMERIC(15,2),
     due_date DATE
@@ -119,7 +119,7 @@ CREATE TABLE Tax_Demand (
 
 CREATE TABLE Demand_Notice (
     notice_id SERIAL PRIMARY KEY,
-    demand_id INT,
+    demand_id INT REFERENCES Tax_Demand(demand_id) ON DELETE CASCADE,
     issue_date DATE,
     taxpayer_name VARCHAR(255),
     amount NUMERIC(15,2)
@@ -128,7 +128,7 @@ CREATE TABLE Demand_Notice (
 CREATE TABLE Tax_Receipt (
     tax_receipt_id SERIAL PRIMARY KEY,
     receipt_no VARCHAR(100),
-    taxpayer_id INT,
+    taxpayer_id INT REFERENCES Tax_Assessment(assessment_id) ON DELETE CASCADE,
     tax_type VARCHAR(100),
     amount NUMERIC(15,2),
     receipt_date DATE
@@ -203,8 +203,8 @@ CREATE TABLE Petty_Cash (
 
 CREATE TABLE Attendance (
     attendance_id SERIAL PRIMARY KEY,
-    employee_id INT,
-    work_id INT,
+    employee_id INT REFERENCES Employee_Master(employee_id) ON DELETE CASCADE,
+    work_id INT REFERENCES Work_Estimate(estimate_id) ON DELETE CASCADE,
     date DATE,
     status VARCHAR(50)
 );
@@ -219,7 +219,7 @@ CREATE TABLE Work_Estimate (
 
 CREATE TABLE Measurement_Book (
     measurement_id SERIAL PRIMARY KEY,
-    work_id INT,
+    work_id INT REFERENCES Work_Estimate(estimate_id) ON DELETE CASCADE,
     measurement_date DATE,
     quantity NUMERIC(10,2),
     remarks TEXT
@@ -227,7 +227,7 @@ CREATE TABLE Measurement_Book (
 
 CREATE TABLE Work_Bill (
     bill_id SERIAL PRIMARY KEY,
-    work_id INT,
+    work_id INT REFERENCES Work_Estimate(estimate_id) ON DELETE CASCADE,
     contractor_name VARCHAR(255),
     amount NUMERIC(15,2),
     bill_date DATE
@@ -235,8 +235,8 @@ CREATE TABLE Work_Bill (
 
 CREATE TABLE Salary_Payment (
     payment_id SERIAL PRIMARY KEY,
-    employee_id INT,
-    work_id INT,
+    employee_id INT REFERENCES Employee_Master(employee_id) ON DELETE CASCADE,
+    work_id INT REFERENCES Work_Estimate(estimate_id) ON DELETE SET NULL,
     salary_month VARCHAR(50),
     gross_salary NUMERIC(15,2),
     deductions NUMERIC(15,2),
@@ -317,7 +317,7 @@ CREATE TABLE Loan_Register (
 
 CREATE TABLE Audit_Compliance (
     compliance_id SERIAL PRIMARY KEY,
-    objection_id INT,
+    objection_id INT REFERENCES Audit_Objection(objection_id) ON DELETE CASCADE,
     action_taken TEXT,
     compliance_date DATE,
     status VARCHAR(100)
@@ -325,7 +325,7 @@ CREATE TABLE Audit_Compliance (
 
 CREATE TABLE Travel_Allowance (
     ta_id SERIAL PRIMARY KEY,
-    employee_id INT,
+    employee_id INT REFERENCES Employee_Master(employee_id) ON DELETE CASCADE,
     travel_date DATE,
     source VARCHAR(255),
     destination VARCHAR(255),
